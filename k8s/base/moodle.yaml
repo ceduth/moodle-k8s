@@ -1,0 +1,51 @@
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: moodle-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moodle
+  labels:
+    app: moodle
+spec:
+  selector:
+    matchLabels:
+      app: moodle
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: moodle
+    spec:
+
+      containers:
+        - image: "ceduth/moodle:latest"
+          name: moodle
+          envFrom:
+            - configMapRef:
+                name: shared-envs
+          ports:
+            - containerPort: 80
+              name: http
+            - containerPort: 443
+              name: https
+          volumeMounts:
+            - name: moodle-data
+              mountPath: /var/moodledata
+
+      volumes:
+        - name: moodle-data
+          persistentVolumeClaim:
+            claimName: moodle-pvc

@@ -1,0 +1,22 @@
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moodle
+  labels:
+    app: moodle
+spec:
+  selector:
+    matchLabels:
+      app: moodle
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: moodle
+    spec:
+      containers:
+      - image: "europe-west1-docker.pkg.dev/leeram/leeram-docker/moodle"
+        name: moodle

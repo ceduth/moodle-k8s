@@ -1,0 +1,22 @@
+# Prod Cluster (GKE)
+# ----------------------------------------------------------------
+
+# configMapGenerator
+# generate a ConfigMap named envs-<some-hash> where each key/value pair in the
+# env file appears as a data entry (separated by \n).
+configMapGenerator:
+  - name: envs
+    envs:
+      - .env
+
+
+bases: 
+  - ../../base
+
+patchesStrategicMerge:
+  - moodle-patch-env.yaml
+  - moodle-patch-image.yaml
+
+namePrefix: $INSTANCE
+
+

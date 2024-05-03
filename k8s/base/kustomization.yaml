@@ -1,0 +1,14 @@
+
+resources:
+- moodle.yaml
+- moodle-svc.yaml
+
+
+# configMapGenerator
+# generate a ConfigMap named shared-envs-<some-hash> where each key/value pair in the
+# env file appears as a data entry (separated by \n).
+
+configMapGenerator:
+- name: shared-envs
+  envs:
+  - shared-envs.yaml

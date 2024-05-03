@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moodle
+spec:
+  template:
+    spec:
+      containers:
+        - name: moodle
+
+          # Include shared envs from ../base/.env,
+          # Inject prod envs from `./env` as `envs`.
+          envFrom:
+            - configMapRef:
+                name: envs
+            - configMapRef:
+                name: shared-envs
+
+          # Inject PostgreSQL password from existing k8s Secret resource `secrets/pgpool`.
+          # Check our guide at []() for High Availability PostgreSQL deployment.
+          # ---
+          # kubectl -n database get secret secrets/pgpool -o yaml | \
+          #   yq 'del(.metadata.creationTimestamp, .metadata.uid, .metadata.resourceVersion, .metadata namespace)' | \
+          #   kubectl apply --namespace lms-moodle -f -
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pgpool
+                  key: admin-password
+

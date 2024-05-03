@@ -1,0 +1,26 @@
+# Dev Cluster (KinD, MicroK8s)
+# ----------------------------------------------------------------
+
+
+# configMapGenerator
+# generate a ConfigMap named envs-<some-hash> where each key/value pair in the
+# env file appears as a data entry (separated by \n).
+configMapGenerator:
+  - name: envs
+    literals:
+      - MOODLE_URL: https://172.20.0.4  # Any of our local k8s nodes
+    envs:
+      - .env
+    
+
+bases: 
+  - ../../base
+
+patchesStrategicMerge:
+  - moodle-patch-env.yaml
+  - moodle-patch-image.yaml
+  - moodle-patch-svc.yaml
+
+namePrefix: dev-
+
+

@@ -1,0 +1,27 @@
+name: Docker PR Build and Test
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      id: docker_build
+      uses: docker/build-push-action@v3
+      with:
+        push: false
+        tags: moodle:latest
+
+    - name: Run Snyk to check for vulnerabilities
+      uses: snyk/actions/docker@master
+      continue-on-error: true
+      env:
+        SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      with:
+        command: monitor
+        image: moodle:latest

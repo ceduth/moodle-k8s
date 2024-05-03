@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moodle
+spec:
+  template:
+    spec:
+      containers:
+        - name: moodle
+
+          # Include shared envs from ../base/.env,
+          # Inject dev envs from `./env` as `envs`.
+          envFrom:
+            - configMapRef:
+                name: envs
+            - configMapRef:
+                name: shared-envs
+
+
+
